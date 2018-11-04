@@ -1,0 +1,879 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 3cm
+\topmargin 3cm
+\rightmargin 3cm
+\bottommargin 3cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Homework 1 For MIP
+\end_layout
+
+\begin_layout Author
+Ziheng Chen 1500010632
+\end_layout
+
+\begin_layout Section*
+Problem 1
+\end_layout
+
+\begin_layout Standard
+As for the first order differential,
+\begin_inset Formula 
+\[
+\delta_{x}v_{i,j}=\lambda\frac{v_{i+1,j}-v_{i-1,j}}{2h}+\frac{1-\lambda}{2}\left(\frac{v_{i+1,j+1}-v_{i-1,j+1}}{2h}+\frac{v_{i+1,j-1}-v_{i-1,j-1}}{2h}\right).
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Vertical stripe case: 
+\begin_inset Formula $v_{i+1,j\pm n}=v_{i,j\pm n}=1,v_{i-1,j\pm n}=0,$
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\delta_{x}v_{i,j}=\frac{1}{2},
+\]
+
+\end_inset
+
+so
+\begin_inset Formula 
+\begin{equation}
+\left|\nabla_{h}v_{i,j}\right|=\frac{1}{2}.\label{eq:1st-1}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $45^{\circ}$
+\end_inset
+
+ stripe case: 
+\begin_inset Formula $\widetilde{v_{i+1,j+1}}=\widetilde{v_{i,j+1}}=\widetilde{v_{i+1,j}}=1,$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+\delta_{x}\widetilde{v_{i,j}} & =\lambda\frac{v_{i+1,j}-v_{i-1,j}}{2h}+\frac{1-\lambda}{2}\left(\frac{v_{i+1,j+1}-v_{i-1,j+1}}{2h}+\frac{v_{i+1,j-1}-v_{i-1,j-1}}{2h}\right)\\
+ & =\frac{\lambda}{2}+\frac{1-\lambda}{4},
+\end{align*}
+
+\end_inset
+
+and similarly
+\begin_inset Formula 
+\[
+\delta_{y}\widetilde{v_{i,j}}=\frac{\lambda}{2}+\frac{1-\lambda}{4},
+\]
+
+\end_inset
+
+so
+\begin_inset Formula 
+\begin{equation}
+\left|\nabla_{h}\widetilde{v_{i,j}}\right|=\sqrt{2}\left(\frac{\lambda}{2}+\frac{1-\lambda}{4}\right).\label{eq:1st-2}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To match Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:1st-1"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:1st-2"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, we can take 
+\begin_inset Formula $\lambda=\sqrt{2}-1$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+As for the second order differential,
+\begin_inset Formula 
+\[
+\Delta v_{i,j}\approx\lambda\frac{v_{i+1,j}+v_{i-1,j}+v_{i,j+1}+v_{i,j-1}-4v_{i,j}}{h^{2}}+\frac{1-\lambda}{2}\cdot\frac{v_{i+1,j}+v_{i-1,j}+v_{i,j+1}+v_{i,j-1}-4v_{i,j}}{h^{2}}.
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Vertical stripe case:
+\begin_inset Formula 
+\begin{equation}
+\Delta v_{i,j}\approx\lambda+1-\lambda=1.\label{eq:2nd-1}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $45^{\circ}$
+\end_inset
+
+ stripe case:
+\begin_inset Formula 
+\begin{equation}
+\Delta\widetilde{v_{i,j}}=2\lambda+\frac{1-\lambda}{2}=\frac{1+3\lambda}{2}.\label{eq:2nd-2}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To match Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:2nd-1"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:2nd-2"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, we can take 
+\begin_inset Formula $\lambda=\frac{1}{3}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The two conclusions also apply to piece-wise constant functions.
+\end_layout
+
+\begin_layout Section*
+Problem 2
+\end_layout
+
+\begin_layout Standard
+We implemented ADMM and CG (to solve the linear sub problem) in the codes.
+ To test the performance, we carried out the following tests:
+\end_layout
+
+\begin_layout Subsection
+Single-channel deblur denoise test
+\end_layout
+
+\begin_layout Standard
+We compared different solver for the linear system and the difference between
+ normal and fast ADMM.
+ To measure the optimization process, we plot the relative error
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{\left|\left|Wu_{k}-d_{k}\right|\right|_{2}}{\left|\left|f\right|\right|_{2}}
+\]
+
+\end_inset
+
+and PSNR between intermediate steps and ground truth.
+ The result is shown in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:history"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+; it seems that CG and minRes, non-fast and fast ADMM methods are almost
+ the same.
+ Anyway, we are using fast ADMM and minRes as the sub-problem solver.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw1/doc/plot/single_history.epsc
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Left part: relative error.
+ Right part: PSNR between intermediate result with ground truth.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:history"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+All-channels deblur denoise test
+\end_layout
+
+\begin_layout Standard
+Here we demonstrate serveral full-channel tests, with different stopping
+ criterion; see Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:all-butterfly"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:all-comic"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:all-building"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:all-bird"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ For the `bird' image, the time used is unexpected long, partly because
+ the blue channel contains too few information, so it is very hard to deblur
+ that channel; see Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:blue-bird"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw1/doc/plot/butterfly_3ch.epsc
+	width 80line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Butterfly image.
+ Stopping criterion 
+\begin_inset Formula $2e-5$
+\end_inset
+
+, time used: 204.96s.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:all-butterfly"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw1/doc/plot/comic_3ch.epsc
+	width 80line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Comic image.
+ Stopping criterion 
+\begin_inset Formula $2e-5$
+\end_inset
+
+, time used: 88.51s.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:all-comic"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw1/doc/plot/building_3ch.epsc
+	width 80line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Buidling image.
+ Stopping criterion 
+\begin_inset Formula $5e-6$
+\end_inset
+
+, time used: 424.94s.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:all-building"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw1/doc/plot/bird_3ch.epsc
+	width 80line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Bird image.
+ Stopping criterion 
+\begin_inset Formula $9e-6$
+\end_inset
+
+, time used: 619.47s.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:all-bird"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw1/doc/plot/bird_bch.epsc
+	width 60line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Blue channel of the `bird' image.
+ Note the large dark part of the image.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:blue-bird"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Different 
+\begin_inset Formula $\lambda$
+\end_inset
+
+-s
+\end_layout
+
+\begin_layout Standard
+In order to examine if there is some effect by varying 
+\begin_inset Formula $\lambda$
+\end_inset
+
+, we test the `building' image with different scales of 
+\begin_inset Formula $\lambda$
+\end_inset
+
+-s.
+ See Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:diff-lambda"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ It seems that small 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ will lead to insufficient denoising, while too large 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ might cause the `piecewise-constant' effect on the result.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw1/code/image/result/building_lambda_0.01.png
+	width 20line%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw1/code/image/result/building_lambda_0.1.png
+	width 20line%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw1/code/image/result/building_lambda_1.png
+	width 20line%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw1/code/image/result/building_lambda_10.png
+	width 20line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+From left to right: 
+\begin_inset Formula $\lambda=0.01,0.1,1,10$
+\end_inset
+
+, stopping criterion increases from 4e-7 to 4e-5, time used: 247.05s, 206.33s,
+ 247.51s, 162.00s.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:diff-lambda"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Dismatched kernel gaussian 
+\begin_inset Formula $\sigma$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If we vary the 
+\begin_inset Formula $\sigma$
+\end_inset
+
+ used inblurring-deblurring the image, either under-deblurring or over-deblurrin
+g might happen: we refer the results to Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:diff-sigma"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ We can see that for under-deblurring cases, the result image is still blurred,
+ while on the other hand the features are over-emphasized.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw1/code/image/result/butterfly_gs_0.5.png
+	width 18line%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw1/code/image/result/butterfly_gs_1.png
+	width 18line%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw1/code/image/result/butterfly_gs_1.5.png
+	width 18line%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw1/code/image/result/butterfly_gs_2.png
+	width 18line%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw1/code/image/result/butterfly_gs_2.5.png
+	width 18line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+From left to right: 
+\begin_inset Formula $\sigma=0.5,1.0,1.5,2.0,2.5$
+\end_inset
+
+ in the recovery phase, while the ground truth is 
+\begin_inset Formula $\sigma_{t}=1.5$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:diff-sigma"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

@@ -1,0 +1,1559 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement tbph
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 3cm
+\topmargin 3cm
+\rightmargin 3cm
+\bottommargin 3cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Homework 2 For MIP
+\end_layout
+
+\begin_layout Author
+Ziheng Chen 1500010632
+\end_layout
+
+\begin_layout Section*
+Heat Equation Approach
+\end_layout
+
+\begin_layout Subsection*
+Formulation
+\end_layout
+
+\begin_layout Standard
+The heat equation is applied on the image in the following means:
+\begin_inset Formula 
+\begin{equation}
+\begin{cases}
+\partial_{t}u=\Delta u & t>0\\
+u\left(\overrightarrow{x},0\right)=u_{0} & \text{initial condition}
+\end{cases}.\label{eq:heat-eq-proposal}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To implement Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:heat-eq-proposal"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, we simply replace the laplacian 
+\begin_inset Formula $\Delta$
+\end_inset
+
+ with second-order difference 
+\begin_inset Formula $\delta_{x}^{2}+\delta_{y}^{2}$
+\end_inset
+
+.
+ It is well-known that the stability condition for Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:heat-eq-proposal"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ is
+\begin_inset Formula 
+\[
+\frac{\tau}{h^{2}}\le\frac{1}{2}.
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Numerical Experiment
+\end_layout
+
+\begin_layout Standard
+The solver scripts for the following experiments are 
+\family typewriter
+/code/solvers/heatpde.m
+\family default
+ and 
+\family typewriter
+/code/test_heatpde.m
+\family default
+ .
+ First we demonstrate the deblurred results; see Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:heat-eq-4"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw2/doc/plot/heat-result-butterfly-0.05.png
+	width 49line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Image `butterfly'.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw2/doc/plot/heat-result-building-0.05.png
+	width 49line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Image `building'.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw2/doc/plot/heat-result-bird-0.05.png
+	width 49line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Image `bird'.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw2/doc/plot/heat-result-comic-0.05.png
+	width 49line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Image `comic'.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Four test images.
+ Noise level: 5%.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:heat-eq-4"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The two foci are the effect of total time length 
+\begin_inset Formula $T$
+\end_inset
+
+ and the noise level of the original image.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw2/doc/plot/heat-butterfly-0.02.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Noise level 2% (relative).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw2/doc/plot/heat-butterfly-0.1.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Noise level 10% (relative).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Solved by heat equation, total time 
+\begin_inset Formula $T=4$
+\end_inset
+
+, unit time used in numeric scheme 
+\begin_inset Formula $\tau=0.2$
+\end_inset
+
+.
+ From left to right: intermediate results at 
+\begin_inset Formula $T=2,4,6,8$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:heat-eq"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It is quite clear from Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:heat-eq"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ that as the time goes, the image gets blurred.
+ Level of noise may vary in the beginning, but it has very little effect
+ when 
+\begin_inset Formula $T$
+\end_inset
+
+ is really large.
+\end_layout
+
+\begin_layout Standard
+In a short conclusion, heat equation is good at averaging noise (and thus
+ eliminating them), but the whole image also gets blurred, which is often
+ more difficulty to handle.
+\end_layout
+
+\begin_layout Section*
+Perona-Malik PDE Approach
+\end_layout
+
+\begin_layout Subsection*
+Formulation
+\end_layout
+
+\begin_layout Standard
+The P-M PDE is per se a heat equation with non-linear diffusion; it is proposed
+ as
+\begin_inset Formula 
+\begin{equation}
+\begin{cases}
+\partial_{t}u=c\left(\left|\nabla u\right|^{2}\right)\cdot u_{TT}+b\left(\left|\nabla u\right|^{2}\right)\cdot u_{NN} & t>0\\
+u\left(\overrightarrow{x},0\right)=u_{0} & \text{initial condition}
+\end{cases},\label{eq:pm-formulation}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $b$
+\end_inset
+
+ should satisfy the `backward diffusion' condition 
+\begin_inset Formula 
+\[
+b\left(s\right)=2sc'\left(s\right)+c\left(s\right)\;\text{for large}\;s\ge K
+\]
+
+\end_inset
+
+and isotropic diffusion consistency
+\begin_inset Formula 
+\[
+b\left(0\right)=c\left(0\right)=1.
+\]
+
+\end_inset
+
+A good choice is 
+\begin_inset Formula $c\left(s\right)=1/\left(1+s/K\right).$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here, 
+\begin_inset Formula $u_{NN}=\partial_{\text{normal}}^{2}u$
+\end_inset
+
+ and 
+\begin_inset Formula $u_{TT}=\partial_{\text{tagent}}^{2}u$
+\end_inset
+
+ can be written as
+\begin_inset Formula 
+\[
+\begin{cases}
+u_{NN}=\frac{1}{\left|\nabla u\right|^{2}}\left(u_{x}^{2}u_{xx}+2u_{x}u_{y}u_{xy}+u_{y}^{2}u_{yy}\right)\\
+u_{TT}=\Delta u-u_{NN}
+\end{cases}.
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+A Quick Note
+\end_layout
+
+\begin_layout Standard
+The formula for 
+\begin_inset Formula $u_{NN}$
+\end_inset
+
+ will highly possibly introduce numerical difficulties, so a better choice
+ is to wrap 
+\begin_inset Formula $\left|\nabla u\right|$
+\end_inset
+
+ with a lower bound, i.e.
+\begin_inset Formula 
+\begin{equation}
+\partial_{t}u=c\left(\left|\nabla u\right|^{2}\right)\cdot u_{TT}+b\left(\left|\nabla u\right|^{2}\right)\cdot\frac{1}{\max\left\{ \left|\nabla u\right|^{2},l_{b}\right\} }\left(u_{x}^{2}u_{xx}+2u_{x}u_{y}u_{xy}+u_{y}^{2}u_{yy}\right).\label{eq:pm-modified}
+\end{equation}
+
+\end_inset
+
+We will use Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:pm-modified"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ rather than Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:pm-formulation"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ in the following experiments.
+\end_layout
+
+\begin_layout Subsection*
+Numerical Experiment
+\end_layout
+
+\begin_layout Standard
+We first demonstrate the effect shown in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:pm-general effect"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ It seems that this approach can best recover large homogeneous area with
+ well-defined borders (for example, the different colors on the butterfly's
+ wings), but performs quite poor as far as details are concerned.
+ In the `building' test case, the right-bottom window loses nearly all the
+ details; the same goes for the leaves details in the `bird' test case.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw2/doc/plot/pm-result-butterfly-0.01.png
+	width 49line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Image `butterfly'.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw2/doc/plot/pm-result-building-0.01.png
+	width 49line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Image `building'.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw2/doc/plot/pm-result-bird-0.01.png
+	width 49line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Image `bird'.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw2/doc/plot/pm-result-comic-0.01.png
+	width 49line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Image `comic'.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Four test images.
+ In each inset from left to right: original, blurred and recovered.
+ Noise level: 1%.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:pm-general effect"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Next we will explore the effect of total time 
+\begin_inset Formula $T$
+\end_inset
+
+ and noise level on the performance.
+ In Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:pm-long-T"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ shows the result; it is clear that when 
+\begin_inset Formula $T\to\infty$
+\end_inset
+
+, some numerical errors emerge and locally destory the image; the situation
+ is even worse when the noise level increases.
+ Besides, this approach fails to eliminate noises locally, so that the noises
+ are pushed to some other side and finally pile up.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw2/doc/plot/pm-building-0.01.png
+	width 80line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Noise level 1%.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw2/doc/plot/pm-building-0.02.png
+	width 80line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Noise level 2%.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Solved by P-M PDE, total time 
+\begin_inset Formula $T=40$
+\end_inset
+
+, unit time used in numeric scheme 
+\begin_inset Formula $\tau=0.4$
+\end_inset
+
+.
+ From left to right: intermediate results at 
+\begin_inset Formula $T=10,20,30,40$
+\end_inset
+
+.
+ Parameter: 
+\begin_inset Formula $K=10$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:pm-long-T"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Shock Filter Approach
+\end_layout
+
+\begin_layout Subsection*
+Formulation
+\end_layout
+
+\begin_layout Standard
+The shock filter PDE makes uses of the transportation along the characteristics
+ to enhance the edges.
+ It is formulated as
+\begin_inset Formula 
+\begin{equation}
+\begin{cases}
+\partial_{t}u=-\left|\nabla u\right|F\left(L\left(u\right)\right) & t>0\\
+u\left(\overrightarrow{x},0\right)=u_{0} & \text{initial condition}
+\end{cases},\label{eq:sf-formulation}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $F$
+\end_inset
+
+ is a sign-like function that satisfies
+\begin_inset Formula 
+\[
+\begin{cases}
+F\left(0\right)=0\\
+\text{sgn}\left(s\right)\cdot F\left(s\right)>0, & s\neq0
+\end{cases},
+\]
+
+\end_inset
+
+and 
+\begin_inset Formula $L$
+\end_inset
+
+ represents the laplacian (or to some extent), which is chosen as 
+\begin_inset Formula $\Delta u$
+\end_inset
+
+ or 
+\begin_inset Formula $u_{NN}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection*
+Numerical Experiment
+\end_layout
+
+\begin_layout Subsubsection*
+No noise case
+\end_layout
+
+\begin_layout Standard
+In general this approach will enhance the edges and make images look sharper,
+ as is shown in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:sf-no-noise"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ In this test case, no noise is introduced at the blurring level.
+ Shock filters are good at preserving the black and yellow pattern of the
+ butterfly's wings, the outlines of the building, the bird's mouth and the
+ strokes in the comic, while perform poorly at preserving the windows details
+ in the building; also the leaves behind the bird is left untouched.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw2/doc/plot/sf-result-butterfly-0.png
+	width 49line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Image `butterfly'.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw2/doc/plot/sf-result-building-0.png
+	width 49line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Image `building'.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw2/doc/plot/sf-result-bird-0.png
+	width 49line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Image `bird'.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw2/doc/plot/sf-result-comic-0.png
+	width 49line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Image `comic'.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Four test images.
+ No noise is introduced at the blurring stage.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:sf-no-noise"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A further experiment is carried out to find out which 
+\begin_inset Formula $L$
+\end_inset
+
+ can produce more sharp images, which is shown in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:sf-choice-of-L"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ It seems that the choice of 
+\begin_inset Formula $L=\Delta u$
+\end_inset
+
+ will form more clusters locally (quite obvious observed at the fonts),
+ while 
+\begin_inset Formula $L=u_{NN}$
+\end_inset
+
+ gives more smoothing results.
+ The figure also shows that the textures are pushed too far away when 
+\begin_inset Formula $T\to\infty$
+\end_inset
+
+, so an appropiate termination is crutial.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw2/doc/plot/sf-comic-0-nd20.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset Formula $L=\Delta u$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw2/doc/plot/sf-comic-0-nd21.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset Formula $L=u_{NN}$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Different choice of 
+\begin_inset Formula $L$
+\end_inset
+
+.
+ From left to right: intermediate results at 
+\begin_inset Formula $T=0.01,\dots0.06$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:sf-choice-of-L"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Noise case
+\end_layout
+
+\begin_layout Standard
+In general shock filters cannot handle noises; because of their hyperbolic
+ nature, they will push the noises away instead of eliminating them.
+ So it would be nice if we supply a small blurring term, i.e.
+ to rewrite Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:sf-formulation"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ into
+\begin_inset Formula 
+\[
+\partial_{t}u=-\left|\nabla u\right|F\left(L\left(u\right)\right)+\lambda\cdot\Delta u.
+\]
+
+\end_inset
+
+An appropriate 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ is essential to keep the image noiseless and sharp.
+\end_layout
+
+\begin_layout Standard
+Here we add a 
+\begin_inset Formula $4\%$
+\end_inset
+
+ level noise to the images.
+ As is shown in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:sf-noise"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, noises will be `washed up' to the edges if there is no such denoising
+ term 
+\begin_inset Formula $\lambda\cdot\Delta u$
+\end_inset
+
+, while adding the additional blurring part will greatly reduce the noises.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement p
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw2/doc/plot/sf-comic-0.04-nd21-lambda0.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+No additional blurring, 
+\begin_inset Formula $\lambda=0.$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw2/doc/plot/sf-comic-0.04-nd21-lambda8.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Additional blurring, 
+\begin_inset Formula $\lambda=8.$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Effect of denoising term.
+ From left to right: intermediate results at 
+\begin_inset Formula $T=0.01,\dots0.06$
+\end_inset
+
+.
+ Noise level 4%.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:sf-noise"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

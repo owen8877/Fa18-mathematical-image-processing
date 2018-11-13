@@ -62,14 +62,14 @@ options = struct();
 % innerTest('comic', 'jpeg', options)
 
 %% Noise 1%; comic - normald2
-% options.noise_level = 0.01;
-% options.pde_maxTime = 0.06;
-% options.pde_dt = 0.005;
-% options.pde_lambda = 0.00;
-% options.pde_use_normald2 = true;
-% options.solver_clip_count = 6;
-% options.clip_save = true;
-% innerTest('comic', 'jpeg', options)
+options.noise_level = 0.01;
+options.pde_maxTime = 0.06;
+options.pde_dt = 0.005;
+options.pde_lambda = 0.00;
+options.pde_use_normald2 = true;
+options.solver_clip_count = 6;
+options.clip_save = true;
+innerTest('comic', 'jpeg', options)
 
 %% Noise 2%; comic - normald2
 % options.noise_level = 0.02;
@@ -92,14 +92,14 @@ options = struct();
 % innerTest('comic', 'jpeg', options)
 
 %% Noise 4%; comic - normald2; blurring
-options.noise_level = 0.04;
-options.pde_maxTime = 0.06;
-options.pde_dt = 0.005;
-options.pde_lambda = 8;
-options.pde_use_normald2 = true;
-options.solver_clip_count = 6;
-options.clip_save = true;
-innerTest('comic', 'jpeg', options)
+% options.noise_level = 0.04;
+% options.pde_maxTime = 0.06;
+% options.pde_dt = 0.005;
+% options.pde_lambda = 8;
+% options.pde_use_normald2 = true;
+% options.solver_clip_count = 6;
+% options.clip_save = true;
+% innerTest('comic', 'jpeg', options)
 
 %%
 function innerTest(p1name, p2name, options_ori)

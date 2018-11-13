@@ -1,0 +1,10 @@
+In `shockfilters.m`, we can choose between $\Delta u$ or $u_NN$. The usage is
+```matlab
+options.pde_use_normald2 = true; % stands for $u_NN$
+options.pde_use_normald2 = false; % stands for $\Delta u$
+shockfilters(image_path, T, result_image_path, options)
+```
+
+P.S. I suppose I have carried out a bunch of experiments and concluded the
+results in the report, so it would be more convenient to have a look at
+`/doc/report.pdf`.

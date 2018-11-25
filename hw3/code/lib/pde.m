@@ -1,26 +1,35 @@
 function [v, clips] = pde(I, options)
-    maxT = default(options, 'pde_maxTime', 10);
-    dt = default(options, 'pde_dt', 0.5);
+    maxT = default(options, 'pde_maxTime', 400);
+    dt = default(options, 'pde_dt', 5e-2);
     boundCond = default(options, 'pde_boundary_condition', 'replicate');
-    reinitN = default(options, 'pde_reinitN', 5);
-    reinitStep = default(options, 'pde_reinitStep', 20);
-    clipCount = default(options, 'solver_clip_count', 5);
-    alpha = default(options, 'pde_alpha', 1);
+    reinitN = default(options, 'pde_reinitN', 10);
+    reinitStep = default(options, 'pde_reinitStep', 15);
+    clipCount = default(options, 'solver_clip_count', 6);
+    alpha = default(options, 'pde_alpha', 2);
     gradientLB = default(options, 'pde_gradient_lb', 1);
     shadow = default(options, 'solver_shadow', 'positive');
-    init_offset = default(options, 'pde_initial_offset', 0.05);
+    init_offset = default(options, 'pde_initial_offset', 0.01);
     save_file = default(options, 'solver_save_file', '');
+    mu = default(options, 'pde_mu', 10);
     
-    g = @(x) 1 ./ (1+x.^2);
+    if mod(clipCount, 2) ~= 0
+        error('Clip count must be even!')
+    end
+    
+    g = @(x) 1 ./ (1+mu*x.^2);
     
     [Ix, Iy, ~, ~, ~] = derivative(I, boundCond);
     ggI = g(sqrt(max(Ix.^2+Iy.^2, gradientLB)));
     [ggIx, ggIy, ~, ~, ~] = derivative(ggI, boundCond);
+    ggIxp = max(ggIx, 0);
+    ggIxn = min(ggIx, 0);
+    ggIyp = max(ggIy, 0);
+    ggIyn = min(ggIy, 0);
     
     itr = 1;
     time = dt;
 
-    shape = size(I); clips = zeros([shape(1) shape(2)*clipCount]);
+    shape = size(I); clips = zeros([shape(1)*2 shape(2)*clipCount/2 3], 'uint8');
     clipdt = maxT / clipCount - 1e-6; clipIndex = 0;
     
     if exist(save_file, 'file')
@@ -38,12 +47,27 @@ function [v, clips] = pde(I, options)
         vnn = (vx.^2 .* vxx + 2 .* vx.*vy.*vxy + vy.^2 .* vyy) ./ gradient_vsq;
         
         divngv = vxx + vyy - vnn;
-        ggIgv = ggI.*sqrt(gradient_vsq);
-        v = v + dt * (ggIgv.*divngv + alpha.*ggIgv + ggIx.*vx + ggIy.*vy);
+        ggIgv = ggI .* divngv;
+        
+        [dfxv, dfyv] = dfb(v, true);
+        [dbxv, dbyv] = dfb(v, false);
+        Dfv = sqrt(max(dbxv, 0).^2 + min(dfxv, 0).^2 + max(dbyv, 0).^2 + min(dfyv, 0).^2);
+%         Dbv = sqrt(min(dbxv, 0).^2 + max(dfxv, 0).^2 + min(dbyv, 0).^2 + max(dfyv, 0).^2);
+        gv = ggI .* Dfv;
+        gggv = ggIxp.*dbxv + ggIxn.*dfxv + ggIyp.*dbyv + ggIyn.*dfyv;
+        v = v + dt * (ggIgv.*divngv + alpha.*gv + gggv);
         
         if time >= (clipIndex+1)*clipdt
-            clips(:, clipIndex*shape(2)+1:(clipIndex+1)*shape(2)) = v;
+            if clipIndex < clipCount / 2
+                clips(1:end/2, clipIndex*shape(2)+1:(clipIndex+1)*shape(2), :) = uint8(Irgb);
+            else
+                cc = clipIndex - clipCount / 2;
+                clips(end/2+1:end, cc*shape(2)+1:(cc+1)*shape(2), :) = uint8(Irgb);
+            end
             clipIndex = clipIndex + 1;
+            figure(11); subplot(2, clipCount/2, clipIndex)
+            imshow(uint8(Irgb))
+            title(['Time=' num2str(time)])
         end
         
         if mod(itr, reinitN) == 0
@@ -53,7 +77,7 @@ function [v, clips] = pde(I, options)
             Irgb = zeros(shape(1), shape(2), 3);
             switch shadow
                 case 'zero'
-                    selection = abs(v) < 3e-3;
+                    selection = abs(v) < 2e-3;
                     Imod1 = I; Imod2 = I; Imod3 = I;
                     Imod1(selection) = 255;
                     Imod2(selection) = 0;

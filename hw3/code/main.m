@@ -1,6 +1,4 @@
 function u = main(image_path, result_image_path, options)
-    % Options are:
-
     if nargin < 1
         image_path = 'image/source/DSCN1464.jpg';
     end
@@ -30,17 +28,15 @@ function u = main(image_path, result_image_path, options)
         figure(7); imshow(uint8(f)), title('Before segmentation');
     end
     
+    solver = str2func(default(options, 'solver', 'pde'));
     tic
-    [u, clips] = pde(f, options);
+    [u, clips] = solver(f, options);
     toc
     
     if default(options, 'show', false)
-%         figure; imshow([f_original f u]), title('Truth - Blurred - Recovered');
-        figure(2); mesh(u);
+        figure(3); imshow(clips); title('Intermediate results.')
     end
-    if default(options, 'write_result', false)
+    if default(options, 'write_result', true)
         imwrite(u, result_image_path);
     end
-    
-%     save(sprintf('%s.1.mat', image_path), 'u', 'f')
 end

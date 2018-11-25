@@ -34,6 +34,7 @@ function u = main(image_path, result_image_path, options)
     toc
     
     if default(options, 'show', false)
+        figure(2); mesh(u)
         figure(3); imshow(clips); title('Intermediate results.')
     end
     if default(options, 'write_result', true)

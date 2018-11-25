@@ -1,22 +1,55 @@
 clear; %clc
 
-%% bag
-image_path = 'image/source/bag.jpg';
-result_image_path = 'image/result/bag.jpg';
+%% europe
+image_path = 'image/source/europe_small.jpg';
+result_image_path = 'image/result/europe_small.jpg';
 
-options.pde_maxTime = 135;
-options.pde_dt = 5e-2;
-options.pde_boundary_condition = 'extrap';
-options.pde_reinitStep = 10;
-options.pde_reinitN = 10;
-options.pde_alpha = 1.5;
-options.pde_mu = 1;
-options.pde_initial_offset = 0.05;
+options.admm_max_itr = 24;
+options.admm_refreshN = 3;
+options.admm_mu = 1e2;
 
 options.solver_clip_count = 8;
-options.solver_shadow = 'zero';
-options.solver_save_file = 'saves/bag.mat';
-options.show = false;
+options.solver_shadow = 'positive';
+options.show = true;
 options.solver = 'conv_ms';
+
+%% bag
+% image_path = 'image/source/bag.jpg';
+% result_image_path = 'image/result/bag.jpg';
+% 
+% options.admm_max_itr = 8;
+% options.admm_refreshN = 1;
+% options.admm_mu = 1e2;
+% 
+% options.solver_clip_count = 8;
+% options.solver_shadow = 'positive';
+% options.show = true;
+% options.solver = 'conv_ms';
+
+%% noised_geometry
+% image_path = 'image/source/noised_geometry.jpg';
+% result_image_path = 'image/result/noised_geometry.jpg';
+% 
+% options.admm_max_itr = 8;
+% options.admm_refreshN = 1;
+% options.admm_mu = 1e3;
+% 
+% options.solver_clip_count = 8;
+% options.solver_shadow = 'positive';
+% options.show = true;
+% options.solver = 'conv_ms';
+
+%% meme
+% image_path = 'image/source/meme.jpg';
+% result_image_path = 'image/result/meme.jpg';
+% 
+% options.admm_max_itr = 8;
+% options.admm_refreshN = 1;
+% options.admm_mu = 1e3;
+% 
+% options.solver_clip_count = 8;
+% options.solver_shadow = 'positive';
+% options.show = true;
+% options.solver = 'conv_ms';
 
 main(image_path, result_image_path, options);

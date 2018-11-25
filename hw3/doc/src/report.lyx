@@ -83,7 +83,7 @@
 \begin_body
 
 \begin_layout Title
-Homework 2 For MIP
+Homework 3 For MIP
 \end_layout
 
 \begin_layout Author
@@ -129,6 +129,11 @@ where
 \end_inset
 
  is the edge indicator.
+ We implemented the algorithm in 
+\family typewriter
+/code/lib/pde.m
+\family default
+.R
 \end_layout
 
 \begin_layout Subsection*
@@ -140,15 +145,81 @@ Single and Multiple Item(s)
 \end_layout
 
 \begin_layout Standard
-For images that only contains one item, the segementation is quite easy.
+For images that only contains one item, the segementation is quite easy;
+ in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:p1-bag"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ showed the intermediate results.
 \end_layout
 
 \begin_layout Standard
-[Bag image plz]
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw3/doc/plot/p1-bag-alpha-1.5-mu-1.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Intermediate results for bag image.
+ 
+\begin_inset Formula $\alpha=1.5,\mu=1$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:p1-bag"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Chess
+This method can also be applied to deal with multiple items; in the first
+ example (Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:p1-chess"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) we separated several chesses.
 \end_layout
 
 \begin_layout Standard
@@ -171,7 +242,12 @@ status collapsed
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
+Intermediate results for chess image.
+ 
+\begin_inset Formula $\alpha=1.5,\mu=1$
+\end_inset
 
+.
 \end_layout
 
 \end_inset
@@ -180,6 +256,12 @@ status collapsed
 \end_layout
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:p1-chess"
+
+\end_inset
+
 
 \end_layout
 
@@ -189,7 +271,7 @@ status collapsed
 \end_layout
 
 \begin_layout Standard
-However, things get complicated when multiple items are included the image.
+However, things get complicated when there are even more items.
  We must carefully decide what 
 \begin_inset Formula $\alpha$
 \end_inset
@@ -199,6 +281,51 @@ However, things get complicated when multiple items are included the image.
 \end_inset
 
  to use and when to stop.
+ For larger 
+\begin_inset Formula $\alpha$
+\end_inset
+
+, the contour will collapse more quickly and larger 
+\begin_inset Formula $\mu$
+\end_inset
+
+ is needed to anchor the edges.
+ Comparing Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:p1-meme-alpha-2-mu-1"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ with Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:p1-meme-alpha-5-mu-1"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, it is quite obvious that the top part of the cup is not well separated;
+ but if we also increase 
+\begin_inset Formula $\mu$
+\end_inset
+
+ (in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:p1-meme-alpha-5-mu-10"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+), the result will be better.
 \end_layout
 
 \begin_layout Standard
@@ -285,7 +412,7 @@ Intermediate results.
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "fig:p1-meme-alpha-2-mu-1-1"
+name "fig:p1-meme-alpha-5-mu-1"
 
 \end_inset
 
@@ -345,16 +472,421 @@ name "fig:p1-meme-alpha-5-mu-10"
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsubsection*
 Noise and Blur
 \end_layout
 
 \begin_layout Standard
-idk
+Level set methods are vulnerable to noises; however, it will become stabler
+ if the blurring is adequate.
+ In Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:p1-bag-blur"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ we blurred the original image by a gaussian kernel with 
+\begin_inset Formula $\sigma=1$
+\end_inset
+
+; it seems that the algorithm produces a much stabler contour, which is
+ impossible after noise has been introduced (see Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:p1-bag-blur-noise"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw3/doc/plot/p1-bag-blurred-1.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Blurring variance 
+\begin_inset Formula $\sigma=1$
+\end_inset
+
+, 
+\begin_inset Formula $\alpha=1.5,\mu=1$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:p1-bag-blur"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw3/doc/plot/p1-bag-blurred-1-noise-0.01.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Blurring variance 
+\begin_inset Formula $\sigma=1$
+\end_inset
+
+ and with 1% noise , 
+\begin_inset Formula $\alpha=1.5,\mu=1$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:p1-bag-blur-noise"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section*
-Convexified CV Model
+Convexified Binary MS Model
+\end_layout
+
+\begin_layout Standard
+According to the formulation in the original paper
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+DOI 10.1007/s10915-009-9331-z
+\end_layout
+
+\end_inset
+
+, the centeral problem is 
+\begin_inset Formula 
+\[
+\min_{0\le u\le1}\left|\nabla u\right|_{g}+\mu\left\langle u,r\right\rangle ,\;r=\left(f-c_{1}\right)^{2}+\left(f-c_{2}\right)^{2},
+\]
+
+\end_inset
+
+which is relaxed to iterating
+\begin_inset Formula 
+\begin{align*}
+\left(u^{k+1},d^{k+1}\right) & =\arg\min_{0\le u\le1,d}\left|d\right|_{g}+\mu\left\langle u,r\right\rangle +\frac{\lambda}{2}\left|\left|d-\nabla u-b^{k}\right|\right|^{2},\\
+b^{k+1} & =b^{k}+\lambda\left(\nabla u^{k}-d^{k}\right).
+\end{align*}
+
+\end_inset
+
+We implemented the algorithm in 
+\family typewriter
+/code/lib/conv_ms.m
+\family default
+.
+\end_layout
+
+\begin_layout Subsection*
+Numerical Experiment
+\end_layout
+
+\begin_layout Standard
+First, we will test this model on the bag image; we refer to Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:p2-bag"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ for the result.
+ The result produced from desktop items (in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:p2-meme"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) also looks fine.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw3/doc/plot/p2-bag.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Intermediate results for bag image.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:p2-bag"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw3/doc/plot/p2-meme.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Intermediate results for desktop item image.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:p2-meme"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This binary MS model is less vulnerable to gradient noises, as is shown
+ in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:p2-geometry"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+; but we failed to reproduce the results on the Europe-shape image, shown
+ in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:p2-europe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw3/doc/plot/p2-noised-geometry.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Intermediate results for noised geometry image.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:p2-geometry"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw3/doc/plot/p2-europe.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Intermediate results for Europe-shape image.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:p2-europe"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_body

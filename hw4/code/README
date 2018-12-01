@@ -1,0 +1,7 @@
+## Boundary conditions
+I only use 'replicate' or 'symmetric'. Other conditions are not tested.
+
+## How to run
+In theory `main.m` should be compatible with the given interface. But in
+case anything goes wrong, you can check `testThreeChannel.m` and see if my
+examples.

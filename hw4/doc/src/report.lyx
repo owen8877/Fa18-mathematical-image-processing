@@ -1,0 +1,986 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement h
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 4cm
+\topmargin 2cm
+\rightmargin 4cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Homework 4 For MIP
+\end_layout
+
+\begin_layout Author
+Ziheng Chen 1500010632
+\end_layout
+
+\begin_layout Section*
+Analysis Approach
+\end_layout
+
+\begin_layout Subsection*
+Formulation
+\end_layout
+
+\begin_layout Standard
+The analysis approach is based on the following model:
+\begin_inset Formula 
+\begin{equation}
+\min_{u\in\mathbb{R}^{n}}\left|\left|\boldsymbol{\lambda}\cdot Wu\right|\right|_{1}+\frac{1}{2}\left|\left|Au-f\right|\right|_{2}^{2}.\label{eq:ana-min}
+\end{equation}
+
+\end_inset
+
+Here, in this report, we will use choose wavelet as the operator 
+\begin_inset Formula $W$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+To solve Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ana-min"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, we use the standard ADMM algorithm, which is discussed in the first report
+ (so we will not type the formula again).
+\end_layout
+
+\begin_layout Subsection*
+Numerical Experiment
+\end_layout
+
+\begin_layout Standard
+As in the first report, there are a few aspects to resolve: solver for sub-probl
+em, general performance, choice of 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ and choice of wavelet frames.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Solver for sub-problem
+\end_layout
+
+\begin_layout Standard
+Recall that in ADMM we have to update the prime and dual variables consequently;
+ when updating the prime variable, a linear system is meant to be solved:
+\begin_inset Formula 
+\[
+u^{k+1}=\arg\min\frac{1}{2}\left|\left|Au-f\right|\right|_{2}^{2}+\frac{\mu}{2}\left|\left|Wu-d^{k}+b^{k}\right|\right|_{2}^{2},
+\]
+
+\end_inset
+
+which can be tranformed into 
+\begin_inset Formula 
+\begin{equation}
+u^{k+1}=\left(A^{T}A+\mu I\right)^{-1}\left(A^{T}f+\mu W^{T}\left(d^{k}-b^{k}\right)\right).\label{eq:ana-sub-problem}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Two popular solvers for Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ana-sub-problem"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ are conjugate gradient method (referred to as CG) and minimal residual
+ method (minRes).
+ To test their performance, we select a gray-scale image and carry out the
+ tests in combination with and without FISTA acceleration; see Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:ana-solver"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:ana-solver-image"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ Since there is hardly any difference, so we choose the fastest one (labeled
+ as `CG fast') in the following tests.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw4/doc/plot/ana-solver-cg-minres-test.epsc
+	width 80line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Performance of two sub-problem solvers, with and without FISTA acceleration.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:ana-solver"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw4/doc/plot/ana-solver-test.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Output image for the four combinations.
+ From left to right: CG non-fast, CG fast, minRes non-fast, minRes fast.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:ana-solver-image"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+General performance (compared with TV-approach)
+\end_layout
+
+\begin_layout Standard
+Recall that in the first report we use total variation as the penalty term.
+ We repeated the tests (results are in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:ana-general"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+), only changing 
+\begin_inset Formula $W=\nabla$
+\end_inset
+
+ to wavelet decomposition.
+ The result shows that there is no such difference, since both approaches
+ can partly recover the image.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw4/doc/plot/ana-compared-tv-bird.png
+	width 80line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Bird image.
+ Stopping criterion 9e-6, 
+\begin_inset Formula $\lambda=1$
+\end_inset
+
+, piece-wise linear basis; time used: 262.71s.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw4/doc/plot/ana-compared-tv-building.png
+	width 60line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Building image.
+ Stopping criterion 5e-6, 
+\begin_inset Formula $\lambda=1$
+\end_inset
+
+, piece-wise linear basis; time used: 209.57s.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw4/doc/plot/ana-compared-tv-butterfly.png
+	width 80line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Butterfly image.
+ Stopping criterion 6e-6, 
+\begin_inset Formula $\lambda=1$
+\end_inset
+
+, piece-wise linear basis; time used: 328.31s.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw4/doc/plot/ana-compared-tv-comic.png
+	width 70line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Comic image.
+ Stopping criterion 8e-6, 
+\begin_inset Formula $\lambda=1$
+\end_inset
+
+, piece-wise linear basis; time used: 192.32s.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Performance of analysis approach.
+ Parameter settings are attached under the images.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:ana-general"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Choice of 
+\begin_inset Formula $\lambda$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Since we are finding a sparse representation of the image in the wavelet
+ space, larger 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ will lead to smoother outputs (although sometimes the smoothing is way
+ more than needed).
+ The numerical results also confirm this, as is shown in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:ana-lambda"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, that small 
+\begin_inset Formula $\lambda$
+\end_inset
+
+-s help the convergence and look more clear.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw4/doc/plot/ana-different-lambda-butterfly.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Different choices of 
+\begin_inset Formula $\lambda$
+\end_inset
+
+.
+ From left to right: original (no blur or noise), recovered images (by setting
+ 
+\begin_inset Formula $\lambda=0.01,0.1,1,10$
+\end_inset
+
+).
+ Frame basis used: piecewise-linear.
+ Time used: 332.09s, 545.31s, 267.74s and 118.55s respectively.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:ana-lambda"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Choice of wavelet frames
+\end_layout
+
+\begin_layout Standard
+According to the given code, we can choose to use different kinds of polynomials
+ to construct a wavelet frame.
+ At first it is nature to think that under the same resolution, piecewise-cubic
+ frames will give better result when 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ is very large since they have more basis and better expression.
+ However, the numerical experiment gives `contradictory' results, as is
+ shown in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:ana-frame"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ I suppose the reason is cubic functions are more in number, so it is harder
+ to reach the optimized point under roughly the same time.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw4/doc/plot/ana-different-frame-butterfly.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Choices of different frames used.
+ From left to right: original, recovered images (by setting the frame function
+ as `haar', `piecewise-linear' and `piecewise-cubic').
+ Time used: 194.26s, 267.74s and 555.34s respectively.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:ana-frame"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Balanced Approach
+\end_layout
+
+\begin_layout Subsection*
+Formulation
+\end_layout
+
+\begin_layout Standard
+The model is described as 
+\begin_inset Formula 
+\begin{equation}
+\min_{\alpha\in\text{Ran}\left(W\right)}\left|\left|\boldsymbol{\lambda}\cdot\alpha\right|\right|_{1}+\frac{1}{2}\left|\left|AW^{T}\alpha-f\right|\right|_{2}^{2}+\frac{\kappa}{2}\left|\left|\left(I-WW^{T}\right)\alpha\right|\right|_{2}^{2},\label{eq:bal-formulation}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ is the coefficient in the wavelet space.
+\end_layout
+
+\begin_layout Standard
+To solve Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:bal-formulation"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, we choose Proximal Forward-Backward Spliting (PFBS) method, i.e.
+\begin_inset Formula 
+\[
+\begin{cases}
+g_{k} & =\alpha_{k}-\frac{1}{L}\nabla F_{2}\left(\alpha_{k}\right)\\
+\alpha_{k+1} & =\mathcal{T}_{\lambda/L}\left(g_{k}\right)
+\end{cases}
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $F_{2}\left(\alpha\right)=WA^{T}\left(AW^{T}\alpha-f\right)+\kappa\left(I-WW^{T}\right)\alpha$
+\end_inset
+
+ and 
+\begin_inset Formula $L$
+\end_inset
+
+ is its Lipschitz gradient.
+ Generally speaking, if 
+\begin_inset Formula $A$
+\end_inset
+
+ is the blurring operator, 
+\begin_inset Formula $L$
+\end_inset
+
+ seems not much larger than 1.
+\end_layout
+
+\begin_layout Subsection*
+Numerical Experiment
+\end_layout
+
+\begin_layout Standard
+Here we compared this approach with TV approach.
+ As is shown in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:bal-gen"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, this approach is indeed feasible.
+ One may argue that the 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ we use here does not match that in TV tests; in fact, this comparison does
+ not make sense since the penalty term is essentially different (although
+ we have to confess that we didn't tune the best parameter in TV tests).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw4/doc/plot/bal-compared-tv-bird.png
+	width 80line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Bird image.
+ Parameter : 
+\begin_inset Formula $\lambda=0.1,\kappa=0.1,L=2$
+\end_inset
+
+, piece-wise linear basis; time used: 80.42s.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw4/doc/plot/bal-compared-tv-building.png
+	width 60line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Building image.
+ Parameter : 
+\begin_inset Formula $\lambda=0.1,\kappa=0.1,L=2$
+\end_inset
+
+, piece-wise linear basis; time used: 99.86s.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw4/doc/plot/bal-compared-tv-butterfly.png
+	width 80line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Butterfly image.
+ Parameter : 
+\begin_inset Formula $\lambda=0.1,\kappa=0.1,L=2$
+\end_inset
+
+, piece-wise linear basis; time used: 169.69s.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw4/doc/plot/bal-compared-tv-comic.png
+	width 70line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Comic image.
+ Parameter : 
+\begin_inset Formula $\lambda=0.1,\kappa=0.1,L=2$
+\end_inset
+
+, piece-wise linear basis; time used: 196.76s.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Performance of balanced approach.
+ Parameter settings are attached under the images.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:bal-gen"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

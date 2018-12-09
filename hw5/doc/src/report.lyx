@@ -1,0 +1,882 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 3cm
+\topmargin 3cm
+\rightmargin 3cm
+\bottommargin 3cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Homework 5 For MIP
+\end_layout
+
+\begin_layout Author
+Ziheng Chen 1500010632
+\end_layout
+
+\begin_layout Section*
+Frame Based Segmentation
+\end_layout
+
+\begin_layout Subsection*
+Formulation
+\end_layout
+
+\begin_layout Standard
+Given observed image 
+\begin_inset Formula $f$
+\end_inset
+
+, the segementation is found based on the following model:
+\begin_inset Formula 
+\[
+\min_{0\le u\le1,\left(c_{1},c_{2}\right)\in\mathbb{R}^{2}}\left|\left|\lambda\cdot Wu\right|\right|_{1}+\left\langle \left(c_{1}-f\right)^{2}-\left(c_{2}-f\right)^{2},u\right\rangle 
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $W$
+\end_inset
+
+ is the wavlet decomposition operator and the regularization coefficient
+ 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ is composed as 
+\begin_inset Formula 
+\[
+\lambda_{l,\boldsymbol{j}}=\frac{\alpha}{1+\sigma\sum\left|W_{l,\boldsymbol{j}}f\right|^{2}}.
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Numerical Experiment
+\end_layout
+
+\begin_layout Standard
+Here we test a few images with or without distortion (noise or blur); the
+ wavelet frame is constructed by piece-wise linear functions with level
+ set to 2.
+\end_layout
+
+\begin_layout Standard
+First we run the algorithm on clean images (without noise); as listed in
+ Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:che"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:meme"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, the algorithm can give segementation for the image, but the result is
+ far from satisfactory.
+ A potential reason is that to achieve robustness, the algorithm tend to
+ combine together different parts with the same grayscale; as a result,
+ it is hard to distinguish the top part of the chess stones from the bottom
+ part of the desktop.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw5/doc/plot/chess_intermediate.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Intermediate results.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw5/doc/plot/chess_result.png
+	width 60line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Segmented result.
+ Left: original image; mid: red part indicates the `outer part'; right:
+ figure for 
+\begin_inset Formula $\chi_{\Omega_{1}}$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Image of chess stones.
+ 150 iterations, 
+\begin_inset Formula $\alpha=10,\sigma=50$
+\end_inset
+
+, time used: 110.03s.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:che"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw5/doc/plot/meme_intermediate.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Intermediate results.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw5/doc/plot/meme_result.png
+	width 60line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Segmented result.
+ Left: original image; mid: red part indicates the `outer part'; right:
+ figure for 
+\begin_inset Formula $\chi_{\Omega_{1}}$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Image of desktop items.
+ 150 iterations, 
+\begin_inset Formula $\alpha=10,\sigma=100$
+\end_inset
+
+, time used: 84.59s.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:meme"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Then we add some noise to the test images.
+ A first example is the commonly used geometry image shown in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:geo"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ Next we add noise to images containing a bag and an aircraft, in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:bag"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:air"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ respectively.
+ The results show a clean segementation and confirm the robustness.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw5/doc/plot/noised_geometry_intermediate.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Intermediate results.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw5/doc/plot/noised_geometry_result.png
+	width 60line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Segmented result.
+ Left: original image; mid: red part indicates the `outer part'; right:
+ figure for 
+\begin_inset Formula $\chi_{\Omega_{1}}$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Image of noised geometry.
+ 150 iterations, 
+\begin_inset Formula $\alpha=10,\sigma=50$
+\end_inset
+
+, time used: 45.26s.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:geo"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw5/doc/plot/bag_intermediate.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Intermediate results.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw5/doc/plot/bag_result.png
+	width 60line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Segmented result.
+ Left: original image; mid: red part indicates the `outer part'; right:
+ figure for 
+\begin_inset Formula $\chi_{\Omega_{1}}$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Image of a bag with pepper noise.
+ 100 iterations, 
+\begin_inset Formula $\alpha=0.1,\sigma=50$
+\end_inset
+
+, time used: 17.88s.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:bag"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw5/doc/plot/aircraft_intermediate.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Intermediate results.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw5/doc/plot/aircraft_result.png
+	width 60line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Segmented result.
+ Left: original image; mid: red part indicates the `outer part'; right:
+ figure for 
+\begin_inset Formula $\chi_{\Omega_{1}}$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Image of a aircraft with pepper noise.
+ 3000 iterations, 
+\begin_inset Formula $\alpha=10,\sigma=50$
+\end_inset
+
+, time used: 288.65s.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:air"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Surface reconstruction
+\end_layout
+
+\begin_layout Subsection*
+Formulation
+\end_layout
+
+\begin_layout Standard
+Given initial guess 
+\begin_inset Formula $f=\chi_{\Omega_{0}}$
+\end_inset
+
+ and the distance function 
+\begin_inset Formula $\phi$
+\end_inset
+
+, the surface is reconstructed via solving the following model:
+\begin_inset Formula 
+\[
+\min_{0\le u\le1}\left|\left|\lambda\cdot Wu\right|\right|_{1}+\left\langle 2f-1,u\right\rangle 
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $\lambda=\alpha\phi$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection*
+Numerical Experiment
+\end_layout
+
+\begin_layout Standard
+We did implement the 3d wavelet code (in 
+\family typewriter
+/code/wavelet-lib
+\family default
+).
+ However, we didn't succeed in figuring out the parameters and obtaining
+ the result.
+ To complement that, we carried out some experiments in the 2D case, as
+ is shown in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:2d-surf"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ The result seems correct, but it is quite confusing why the solution is
+ hollow in the center.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw5/doc/plot/surf.epsc
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+300 iterations, 
+\begin_inset Formula $\alpha=0.3,\mu=0.01$
+\end_inset
+
+.
+ Time used: 39.318s.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:2d-surf"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

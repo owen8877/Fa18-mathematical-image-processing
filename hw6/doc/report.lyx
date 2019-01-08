@@ -1,0 +1,1669 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage{pgfplots}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 3cm
+\topmargin 3cm
+\rightmargin 3cm
+\bottommargin 3cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Homework 6 For MIP - Final Project
+\end_layout
+
+\begin_layout Author
+Ziheng Chen
+\end_layout
+
+\begin_layout Abstract
+In this report, we will inspect a specific method for motion blur problems.
+ We will first get familiar with radon transforms and build up proper inverse
+ radon solvers.
+ Next, we will test different algorithms to filter out sharp edges and discuss
+ how to align the projections.
+ Finally, we will summarize all the test cases and give further discussions.
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Subsection
+Motion blur
+\end_layout
+
+\begin_layout Standard
+The deblurring problem, especially the blind version, is a very challenging
+ problem due to its ill-posedness and large flexibility in the solution
+ space.
+ However, for motion blur, we can always give some assumptions (or `prior'
+ in papers by some statisticians), such as smoothness and sparsity, which
+ can be a guiding factor during the recovery.
+\end_layout
+
+\begin_layout Subsection
+Radon transform
+\end_layout
+
+\begin_layout Standard
+A brief retrospect on radon transform:
+\begin_inset Formula 
+\[
+\phi_{\theta}^{f}\left(\rho\right)=\int\int f\left(x,y\right)\delta\left(\rho-x\cos\left(\theta\right)-y\sin\left(\theta\right)\right)\enskip dx\enskip dy.
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename plot/what-is-radon.epsc
+	width 80line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+An intuitive illustration on radon transform.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:what-is-radon"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Connection
+\end_layout
+
+\begin_layout Standard
+The connection between radon transform and kernel of motion blur was shown
+ by 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Cho2011"
+literal "false"
+
+\end_inset
+
+: consider a binary image 
+\begin_inset Formula 
+\[
+I_{\text{bin}}\left(x,y\right)=H\left(x\right)
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $H$
+\end_inset
+
+ is the Heaviside step function.
+ If the image is blurred by kernel 
+\begin_inset Formula $k$
+\end_inset
+
+ without noise, then the blurred image is given by
+\begin_inset Formula 
+\begin{equation}
+I_{\text{blur}}\left(x,y\right)=k\otimes I_{\text{bin}}.\label{eq:connection-blur-kernel}
+\end{equation}
+
+\end_inset
+
+Since 
+\begin_inset Formula $k$
+\end_inset
+
+ is constant, differentiating Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:connection-blur-kernel"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ gives
+\begin_inset Formula 
+\begin{align}
+\partial_{x}I_{\text{blur}}\left(x,y\right) & =k\otimes\partial_{x}I_{\text{bin}}\nonumber \\
+ & =k\otimes\delta\left(x\right)\label{eq:connection-blur-kernel-diff}\\
+ & =\int k\enskip dy\nonumber \\
+ & =R_{\frac{\pi}{2}}\left(k\right).\nonumber 
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In fact, Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:connection-blur-kernel-diff"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ holds for different 
+\begin_inset Formula $\theta$
+\end_inset
+
+-s, which lays a foundation of this deblurring technique.
+ By using this method, we can partially recover the blurred image, which
+ is to be further discussed.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw6/code/image/compare/Wall_834-1.jpg
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+A demonstration of conception.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Recover scheme and numerical implementation
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+input{plot/overall.tikz}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Deblur procedure (if given kernel)
+\end_layout
+
+\begin_layout Standard
+The last step, deblurring if given kernel, has been fully discussed in the
+ previous homeworks.
+ Here, we quickly review the procedure.
+\end_layout
+
+\begin_layout Standard
+The model used to depict blurring is
+\begin_inset Formula 
+\[
+B=k\otimes I+\nu
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $k$
+\end_inset
+
+ is the ground-truth kernel and 
+\begin_inset Formula $\nu$
+\end_inset
+
+ is the noise term.
+ To efficiently solve the ill-conditioned problem, we use ADMM.
+\end_layout
+
+\begin_layout Subsection
+Kernel recovery (if given observations of radon transform)
+\end_layout
+
+\begin_layout Standard
+A first question is how can we rebuild 
+\begin_inset Formula $\widehat{k}$
+\end_inset
+
+ if we have the observations 
+\begin_inset Formula $\left\{ \widehat{\phi_{i}}\right\} $
+\end_inset
+
+ of radon transform of the kernel 
+\begin_inset Formula $k$
+\end_inset
+
+.
+ To ensure consistency, we force the radon tranform of 
+\begin_inset Formula $\widehat{k}$
+\end_inset
+
+ should be close to 
+\begin_inset Formula $\left\{ \widehat{\phi_{i}}\right\} $
+\end_inset
+
+, i.e.
+\begin_inset Formula 
+\[
+\min\sum_{i}\bigl\Vert R_{\widehat{\theta_{i}}}\widehat{k}-\widehat{\phi_{i}}\bigr\Vert_{2}^{2}.
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A second thought is that we want 
+\begin_inset Formula $\widehat{k}$
+\end_inset
+
+ to be smooth, which leads to a regularized term 
+\begin_inset Formula $\bigl\Vert\nabla_{+}\widehat{k}\bigr\Vert_{1}$
+\end_inset
+
+.
+ However, then the kernel is often too `blurry'; to address this, 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Cho2011"
+literal "false"
+
+\end_inset
+
+ models the prior for the kernel as 
+\begin_inset Formula 
+\[
+p\left(k\right)\propto\exp\left(-\lambda_{1}\bigl\Vert\widehat{k}\bigr\Vert^{\gamma_{1}}-\lambda_{2}\bigl\Vert\nabla\widehat{k}\bigr\Vert^{\gamma_{2}}\right)
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $\gamma_{1},\gamma_{2}<1$
+\end_inset
+
+.
+ We mimic the idea and propose the following two models:
+\begin_inset Formula 
+\begin{equation}
+\min\sum_{i}\bigl\Vert R_{\widehat{\theta_{i}}}\widehat{k}-\widehat{\phi_{i}}\bigr\Vert_{2}^{2}+\lambda_{1}\bigl\Vert\nabla_{+}\widehat{k}\bigr\Vert_{1}+\lambda_{2}\bigl\Vert\widehat{k}\bigr\Vert_{1}\label{eq:kernel-model1}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\begin{cases}
+\min & \sum_{i}\bigl\Vert R_{\widehat{\theta_{i}}}\widehat{k}-\widehat{\phi_{i}}\bigr\Vert_{2}^{2}+\lambda_{1}\bigl\Vert\nabla_{+}\widehat{k}\bigr\Vert_{1}+\lambda_{2}\bigl\Vert\sqrt{\widehat{k}}\bigr\Vert_{1}\\
+\text{s.t.} & \bigl\Vert\widehat{k}\bigr\Vert_{1}=1
+\end{cases}\label{eq:kernel-model2}
+\end{equation}
+
+\end_inset
+
+where both models (Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:kernel-model1"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:kernel-model2"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) wants to address the sparsity of 
+\begin_inset Formula $\widehat{k}$
+\end_inset
+
+.
+ However, Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:kernel-model2"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ introduces square root norm, which is not convex and makes the numerical
+ process more difficult.
+\end_layout
+
+\begin_layout Standard
+Here we quickly derive the steps to solve Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:kernel-model2"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ in detail, since it is a bit tricky.
+ The augmented Lagrangian is 
+\begin_inset Formula 
+\begin{align*}
+\mathcal{L}\left(u\right) & =\frac{1}{2}\sum_{i}\Bigl\Vert R_{\widehat{\theta_{i}}}u-\widehat{\phi_{i}}\Bigr\Vert^{2}+\lambda_{1}\bigl\Vert d_{1}\bigr\Vert_{1}+\lambda_{2}\bigl\Vert d_{2}\bigr\Vert_{1} & + & \mu b_{0}\left(\boldsymbol{1}:u-1\right)+\mu b_{1}\cdot\left(\nabla_{+}u-d_{1}\right)+\mu b_{2}\cdot\left(u-d_{2}^{2}\right)\\
+ &  & + & \frac{\mu}{2}\Bigl\Vert\boldsymbol{1}:u-1\Bigr\Vert^{2}+\frac{\mu}{2}\Bigl\Vert\nabla_{+}u-d_{1}\Bigr\Vert^{2}+\frac{\mu}{2}\Bigl\Vert u-d_{2}^{2}\Bigr\Vert^{2}.
+\end{align*}
+
+\end_inset
+
+The update of 
+\begin_inset Formula $d_{2}$
+\end_inset
+
+ is obtained by the following derivation: when the partial derivative of
+ 
+\begin_inset Formula $\mathcal{L}$
+\end_inset
+
+ reaches 0, i.e.
+\begin_inset Formula 
+\begin{equation}
+\partial_{d_{2}}\mathcal{L}=\lambda_{2}\cdot\text{sgn}d_{2}+2\mu d_{2}\left(d_{2}^{2}-u-b_{2}\right)=0.\label{eq:kernel-model2-d2}
+\end{equation}
+
+\end_inset
+
+Since the operations are done element-wise, we temporarily abuse the marks
+ and assume all the variables are scalars.
+ Notice that the sign of 
+\begin_inset Formula $d_{2}$
+\end_inset
+
+ has totally not effect, 
+\begin_inset Formula $\text{sgn}d_{2}$
+\end_inset
+
+ can be simplified to 1, if 
+\begin_inset Formula $d_{2}$
+\end_inset
+
+ can be values other than 0.
+ Here we simply choose the largest root if the cubic Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:kernel-model2-d2"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ has three real roots, otherwise 
+\begin_inset Formula $d_{2}$
+\end_inset
+
+ is set to 0.
+\end_layout
+
+\begin_layout Subsection
+Find optimal 
+\begin_inset Formula $\theta_{i}$
+\end_inset
+
+ and align projections (if given edge locations)
+\end_layout
+
+\begin_layout Standard
+Given edge locations 
+\begin_inset Formula $\left\{ E_{i}\right\} $
+\end_inset
+
+, we can recover the radon transform projection 
+\begin_inset Formula $\left\{ \widehat{\phi_{i}}\right\} $
+\end_inset
+
+ via Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:connection-blur-kernel-diff"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, if we have first estimated 
+\begin_inset Formula $\left\{ \widehat{\theta_{i}}\right\} $
+\end_inset
+
+ correspondingly.
+ To estimate 
+\begin_inset Formula $\left\{ \widehat{\theta_{i}}\right\} $
+\end_inset
+
+, we approximate the image patch 
+\begin_inset Formula $p_{i}\left(x,y\right)$
+\end_inset
+
+ (not necessarily 
+\begin_inset Formula $u$
+\end_inset
+
+) by a binary edge, i.e.
+ solving the following model
+\begin_inset Formula 
+\begin{equation}
+\min\int dy\int dx\cdot\left(y\cos\theta-x\sin\theta\right)^{2}\cdot p_{i}\left(x,y\right)\label{eq:optimal-theta-opt}
+\end{equation}
+
+\end_inset
+
+which is easy to solve via gradient descend method.
+\end_layout
+
+\begin_layout Standard
+Once 
+\begin_inset Formula $\widehat{\theta_{i}}$
+\end_inset
+
+ is obtained, we can check the residual of Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:optimal-theta-opt"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and reject large ones.
+ For those with small residuals, we approximate 
+\begin_inset Formula $u$
+\end_inset
+
+ by 
+\begin_inset Formula $c_{1}H_{\widehat{\theta_{i}}}+c_{2}\left(1-H_{\widehat{\theta_{i}}}\right)$
+\end_inset
+
+, where 
+\begin_inset Formula $H_{\theta}$
+\end_inset
+
+ is the rotated Heaviside function.
+ Numerically, 
+\begin_inset Formula $c_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $c_{2}$
+\end_inset
+
+ are obtained by
+\begin_inset Formula 
+\begin{align*}
+\begin{cases}
+c_{1}=\overline{u\left(x,y\right)} & \text{where }y\cos\theta-x\sin\theta>T\\
+c_{2}=\overline{u\left(x,y\right)} & \text{where }y\cos\theta-x\sin\theta<-T
+\end{cases} & .
+\end{align*}
+
+\end_inset
+
+Here 
+\begin_inset Formula $T$
+\end_inset
+
+ is a fixed threshold.
+\end_layout
+
+\begin_layout Standard
+One thing worth notice is that we had better check if 
+\begin_inset Formula $u$
+\end_inset
+
+ really `looks' like a binary edge rather than a hump.
+ To ensure, 
+\begin_inset Formula $c_{0}$
+\end_inset
+
+ can be computed where 
+\begin_inset Formula $\left|y\cos\theta-x\sin\theta\right|<T$
+\end_inset
+
+ and compared with 
+\begin_inset Formula $c_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $c_{2}$
+\end_inset
+
+.
+ If 
+\begin_inset Formula $u$
+\end_inset
+
+ is more hump-like, 
+\begin_inset Formula $c_{0}$
+\end_inset
+
+ should larger or smaller than both 
+\begin_inset Formula $c_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $c_{2}$
+\end_inset
+
+.
+ An illustration is given in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:c1-c2-illustration"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename slide-plot/patch-cut-two-halves.jpg
+	width 40line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+An illustration on the estimation of 
+\begin_inset Formula $c_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $c_{2}$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:c1-c2-illustration"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace medskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Another necessary procedure is to align the projections.
+ This is done by discreting the grids into half sub-grids, pre-computing
+ the center of the projections and translating the projection with a correspondi
+ng amount of shift.
+\end_layout
+
+\begin_layout Subsection
+Edge Detection
+\end_layout
+
+\begin_layout Standard
+To successfully restore projections of the radon transform, we have to find
+ the right patches 
+\begin_inset Formula $\left\{ p_{i}\right\} $
+\end_inset
+
+.
+ A naive yet efficient way is to sort the pixels by their discrete derivates.
+ For colored images, we sort the pixels by each channel, so that one pixel
+ may be picked more than once.
+\end_layout
+
+\begin_layout Standard
+To avoid two patches being too close (so that they are counted twice), we
+ use the trick to mark out patches that are eligible to produce radon projection
+s.
+ An illustration of detected positions is included in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:edge-illustration"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw6/code/image/intermediate/Wall_834-1.jpg
+	width 25line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+An illustration on the edge detection.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:edge-illustration"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace medskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+An optional step is to pre-apply shockfilter or Perona-Malik PDE to the
+ blurred image to find out the `true' edges, but in practice it just introduces
+ more parameters to tune and makes the procedures much complicated, so we
+ barely add this step.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Numerical experiments
+\end_layout
+
+\begin_layout Subsection
+Intermediate steps
+\end_layout
+
+\begin_layout Standard
+First, we have to be conviced that the steps to recover the kernel are correctly
+ implemented.
+ To check this, we take a known kernel, select some 
+\begin_inset Formula $\theta$
+\end_inset
+
+-s randomly and try to recover the kernel.
+ For a specific example, 10 projections are observed with noise level varied
+ to further test the robustness.
+ As is shown in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:iradon"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, even at a higher noise level, the model can still recover most of the
+ given kernel, while a direct invocation of 
+\family typewriter
+iradon()
+\family default
+ (built in Matlab) is far from satisfactory.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename plot/noise_kernel_test.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Comparison between direct inverse method and a more robust model.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:iradon"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It is also important to check if the dericative term 
+\begin_inset Formula $\partial_{x}I_{\text{blur}}\left(x,y\right)$
+\end_inset
+
+ (in Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:connection-blur-kernel-diff"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) is correctly obtained.
+ We give an example in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:normalized_patch"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+; in practice, since we have no idea what the true kernel is, so these checks
+ can only be done for synthesis test cases.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename plot/normalize_patch.png
+	width 80line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+An illustration of obtaining 
+\begin_inset Formula $\partial_{\rho}I_{\text{blur}}$
+\end_inset
+
+ as an approximation of 
+\begin_inset Formula $R_{\theta}\left(k\right)$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:normalized_patch"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Tests on different images
+\end_layout
+
+\begin_layout Subsubsection*
+Tests on real life scenes with small kernels
+\end_layout
+
+\begin_layout Standard
+For the first part, we will test the method on different scenes in the real
+ life.
+ For the figures listed below, we will always put the true kernel in the
+ right-bottom corner of the middle sub-figure, while in the corresponding
+ location of the right sub-figure lies the recovered kernel.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw6/code/image/compare/street1-4.jpg
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Test on a street scene (index: 4), kernel size 
+\begin_inset Formula $15\times15$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:test-case-4"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw6/code/image/compare/street2_big-5.jpg
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Test on a sign scene (index: 5), kernel size 
+\begin_inset Formula $15\times15$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:test-case-5"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw6/code/image/compare/flower_small-6.jpg
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Test on a flower image (index: 6), kernel size 
+\begin_inset Formula $19\times19$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:test-case-6"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As is shown in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:test-case-4"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:test-case-5"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:test-case-6"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, this method can at least recover part of the blurring effect.
+ It is also quite obvious that the larger the image is (compared to the
+ kernel), the recovery is much easier.
+ However, this method also suffers from the ringing effect during the recovery.
+\end_layout
+
+\begin_layout Subsubsection*
+Tests on real life scenes with unknown kernels
+\end_layout
+
+\begin_layout Standard
+It is also interesting to check if this method works well for naturally
+ blurred images.
+ In Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:test-case-22"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, we examine the result of recovering an escape sign, which also suffers
+ from the ringing effect.
+ An observation to the recovered kernel hints us that the method has a wrong
+ guess of the direction of the kernel, which is very likely caused by the
+ lack of edges of different angles.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/xdroid/Documents/mip-2018-1/hw6/code/image/compare/escape-22.jpg
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Test on an glowing escape sign (index: 22), kernel size 
+\begin_inset Formula $17\times17$
+\end_inset
+
+, image size 
+\begin_inset Formula $651\times328$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:test-case-22"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Tests on images with blurs and noises
+\end_layout
+
+\begin_layout Standard
+It is also worth checking if the method is robust under noises.
+ In Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:test-case-7-8-9"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ we compare the results where the noise level is raised from 
+\begin_inset Formula $0\%$
+\end_inset
+
+(no noise) to 
+\begin_inset Formula $1\%$
+\end_inset
+
+.
+ The recovered kernels are displayed at the right-bottom corner, and a compariso
+n to the ground truth shows that the kernel recovery deteriorates as the
+ noise level rises; also the edges are not as sharp as they are under no
+ noise condition.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename plot/with_noise_case.png
+	width 80line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Test on images with noises (index: 7, 8 and 9), kernel size 
+\begin_inset Formula $19\times19$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:test-case-7-8-9"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Discussions
+\end_layout
+
+\begin_layout Standard
+From the comparisons we can see that the method can partially recover the
+ images; however, the results are far from satisfactory.
+ The probable reasons are as follows:
+\end_layout
+
+\begin_layout Enumerate
+There is a lack of edges oriented at different angles: although we do verify
+ that our inverse radon solver can efficiently recover the kernel from a
+ few observations, in practice, if the angles 
+\begin_inset Formula $\left\{ \theta_{i}\right\} $
+\end_inset
+
+ are not uniformly distributed, the kernel can barely be recovered.
+ To obtain edges at different angles, the target itself should contains
+ a lot of circles, which is quite demanding.
+\end_layout
+
+\begin_layout Enumerate
+Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:connection-blur-kernel-diff"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ only works on binary edges: the theoretical basis, i.e.
+ Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:connection-blur-kernel-diff"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, holds two strong assumptions on the blurred image
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+The edge is straight, i.e.
+ the edge can not be in any other shape like circle
+\end_layout
+
+\begin_layout Enumerate
+The edge is sharp, i.e.
+ there is no transitional zone
+\end_layout
+
+\begin_layout Standard
+which are often hard to satisfy.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Similarity between kernels does not necessarily ensure the similarity between
+ recovered image and ground truth.
+\end_layout
+
+\begin_layout Enumerate
+Edges may not lie where 
+\begin_inset Formula $\left|\nabla I\right|$
+\end_inset
+
+ is large: although it may seem be counterintuitive, it could frequently
+ happen.
+ Consider the following case (shown in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:shift-in-edges"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+), where the kernel has two `arms' on the sides.
+ The blurred image, on some directions, will have a two-sided edges in the
+ gradient profile.
+ Therefore, it may be too naive just to take 
+\begin_inset Formula $\left|\nabla I\right|$
+\end_inset
+
+ to find the edges.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename plot/syn8.jpg
+	width 20line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Synthesis kernel.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename plot/street1_big.jpg
+	height 22pheight%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Gradient of original image.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename plot/street1-4.png
+	height 22pheight%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Gradient of the blurred image.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+An example of shift in the edges defined by 
+\begin_inset Formula $\left|\nabla I\right|$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:shift-in-edges"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Although the method is quite circumscribed, it can give a good estimation
+ or serve as an initial guess, which may be useful.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+btprint "btPrintCited"
+bibfiles "ref"
+options "apalike"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

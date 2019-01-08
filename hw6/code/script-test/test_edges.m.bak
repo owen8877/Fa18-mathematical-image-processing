@@ -1,0 +1,99 @@
+clear; %clc
+
+addpath lib-mat lib-util
+
+f_blurred = double(rgb2gray(imread('image/blurred/building.png')));
+f_blurred_d = double(imread('image/blurred/building.png'));
+Wstruct = gradientHelper();
+g = Wstruct.Wr(f_blurred, Wstruct.Wkernel);
+g = sqrt(g(1:end/2, :, :).^2 + g(1+end/2:end, :, :).^2);
+g_d = Wstruct.Wr(f_blurred_d, Wstruct.Wkernel);
+g_d = sqrt(g_d(1:end/2, :, :).^2 + g_d(1+end/2:end, :, :).^2);
+
+g_copy = g;
+g_shape = size(g);
+g_vec = reshape(g, prod(g_shape), 1);
+[~, sidx] = sort(g_vec, 'descend');
+box_size = 7;
+
+candidate = [];
+for swp_idx = 1:prod(g_shape)*0.05
+    idx = sidx(swp_idx);
+    if g_copy(idx) < 0
+        continue
+    end
+    
+    [i, j] = ind2sub(g_shape, idx);
+    if i <= box_size || i > g_shape(1)-box_size || j <= box_size || j > g_shape(2)-box_size
+        continue
+    end
+    
+    candidate = [candidate; i j];
+    g_copy(i-box_size:i+box_size, j-box_size:j+box_size) = -1;
+end
+
+% f_anno = boximg(f_blurred_d, candidate, box_size);
+% imshow(uint8(f_anno))
+% f_anno = boximg(g_d, candidate, box_size);
+% imshow(f_anno/43, [])
+
+cidx = 8;
+i = candidate(cidx, 1); j = candidate(cidx, 2);
+gradient_patch = g(i-box_size:i+box_size, j-box_size:j+box_size);
+figure(7); clf; subplot(1, 3, 1); title('gradient');
+imshow(normalizeFirst(gradient_patch), [], 'InitialMagnification', 'fit');
+x_coor = repmat(-box_size:box_size, [2*box_size+1, 1]); y_coor = -x_coor';
+% t = (sum(sum(x_coor.*y_coor.*gradient_patch))) / (sum(sum((x_coor.^2-y_coor.^2).*gradient_patch))) * 2;
+% theta = atan(t) / 2;
+
+% use gradient descend
+ngp = normalizeFirst(gradient_patch);
+lossFunc = @(th) sum(sum((y_coor*cos(th) - x_coor*sin(th)).^2.*ngp));
+gFunc = @(th) 2*sum(sum((x_coor*sin(th) - y_coor*cos(th)).*(y_coor*sin(th) + x_coor*cos(th)).*ngp));
+g_options.max_itr = 50;
+g_options.L = 50;
+[theta, loss] = simple_gradient(0, lossFunc, gFunc, g_options);
+
+fprintf('Loss is %.3e.\n', loss)
+
+%%
+color_patch = f_blurred(i-box_size:i+box_size, j-box_size:j+box_size);
+imshow(color_patch/255, [], 'InitialMagnification', 'fit');
+
+weight = 40 - gradient_patch;
+% c1
+area1_mask = y_coor > x_coor * tan(theta);
+c1 = sum(sum(area1_mask .* weight .* color_patch)) / sum(sum(area1_mask .* weight));
+% c2
+area2_mask = y_coor < x_coor * tan(theta);
+c2 = sum(sum(area2_mask .* weight .* color_patch)) / sum(sum(area2_mask .* weight));
+% BH
+BH = (color_patch - c2) / (c1-c2);
+figure(7); subplot(1, 3, 2); title('BH');
+imshow(BH)
+
+% comp_gradient = Wstruct.Wr(BH, Wstruct.Wkernel);
+% comp_gradient = comp_gradient(end/2+1:end, :) * cos(theta) - comp_gradient(1:end/2, :) * sin(theta);
+coor1d = y_coor * cos(theta) - x_coor * sin(theta);
+coor1d = reshape(coor1d, [(2*box_size+1)^2 1]);
+[coor1d, coorIdx] = sort(coor1d);
+
+% comp_gradient = reshape(comp_gradient, [(2*box_size+1)^2 1]);
+% comp_gradient = comp_gradient(coorIdx);
+% figure(7); subplot(1, 3, 3); title('projection');
+% plot(coor1d, comp_gradient)
+
+proj_BH = reshape(BH, [(2*box_size+1)^2 1]);
+proj_BH = proj_BH(coorIdx);
+figure(7); s3 = subplot(1, 3, 3); title('projection'); hold(s3, 'on')
+smooth_BH = movmean(proj_BH, 15);
+
+xp = -11:11;
+xpd = -11.5:11.5;
+grid_BH = interp1(coor1d, smooth_BH, xpd, 'linear', 'extrap');
+
+% proj_gradient = imfilter(smooth_BH', [-1 0 1]/2, 'replicate')';
+grid_gradient = grid_BH(2:end) - grid_BH(1:end-1);
+plot(coor1d, smooth_BH, 'b', 'DisplayName', 'BH');
+plot(xp, grid_gradient, 'r', 'DisplayName', 'gradient');
+legend

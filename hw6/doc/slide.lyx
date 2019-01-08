@@ -1,0 +1,1093 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass beamer
+\begin_preamble
+\usetheme[left,width=3.45em]{Berkeley}
+\usepackage{pgfplots}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+De-motion-blur via inverse radon transform
+\end_layout
+
+\begin_layout Author
+Ziheng Chen
+\end_layout
+
+\begin_layout Frame
+
+\end_layout
+
+\begin_layout Frame
+
+\end_layout
+
+\begin_deeper
+\begin_layout FrameTitle
+Contents
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Motion blur
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename slide-plot/hard-question.jpg
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+A challenging problem.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Radon Transform
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+Formal formulation:
+\begin_inset Formula 
+\[
+\phi_{\theta}^{f}\left(\rho\right)=\int\int f\left(x,y\right)\delta\left(\rho-x\cos\left(\theta\right)-y\sin\left(\theta\right)\right)\enskip dx\enskip dy
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename plot/what-is-radon.epsc
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Connection - a simple observation
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+According to 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Cho2011"
+literal "false"
+
+\end_inset
+
+: consider a binary image 
+\begin_inset Formula 
+\[
+I_{\text{bin}}\left(x,y\right)=H\left(x\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula $H$
+\end_inset
+
+ : Heaviside step function
+\end_layout
+
+\begin_layout Frame
+Blurred image
+\begin_inset Formula 
+\begin{equation}
+I_{\text{blur}}\left(x,y\right)=k\otimes I_{\text{bin}}.\label{eq:connection-blur-kernel}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+Differentiating Eqn 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:connection-blur-kernel"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ gives
+\begin_inset Formula 
+\begin{align*}
+\partial_{x}I_{\text{blur}}\left(x,y\right) & =k\otimes\delta\left(x\right)\\
+ & =\int k\enskip dy\\
+ & =R_{\frac{\pi}{2}}\left(k\right).
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Recover scheme
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Recover scheme
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+input{plot/overall.tikz}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Step 4 - Deblur procedure (if given kernel)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+The model is 
+\begin_inset Formula 
+\[
+B=k\otimes I+\nu
+\]
+
+\end_inset
+
+
+\begin_inset Formula $k$
+\end_inset
+
+: ground-truth kernel, 
+\begin_inset Formula $\nu$
+\end_inset
+
+: noise term.
+\end_layout
+
+\begin_layout Itemize
+ADMM
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Step 3 - Kernel recovery (if given observations of radon transform)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Enforcing the kernel to match its radon transform:
+\begin_inset Formula 
+\[
+\min\sum_{i}\bigl\Vert R_{\widehat{\theta_{i}}}\widehat{k}-\widehat{\phi_{i}}\bigr\Vert_{2}^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Smoothness
+\begin_inset Formula 
+\[
+\bigl\Vert\nabla_{+}\widehat{k}\bigr\Vert_{1}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+How to ensure sparsity?
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Step 3 - Kernel recovery - Sparsity
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+In 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Cho2011"
+literal "false"
+
+\end_inset
+
+ they use 
+\begin_inset Formula 
+\[
+p\left(k\right)\propto\exp\left(-\lambda_{1}\bigl\Vert\widehat{k}\bigr\Vert^{\gamma_{1}}-\lambda_{2}\bigl\Vert\nabla\widehat{k}\bigr\Vert^{\gamma_{2}}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Based on the idea, we propose 
+\begin_inset Formula 
+\[
+\min\sum_{i}\bigl\Vert R_{\widehat{\theta_{i}}}\widehat{k}-\widehat{\phi_{i}}\bigr\Vert_{2}^{2}+\lambda_{1}\bigl\Vert\nabla_{+}\widehat{k}\bigr\Vert_{1}+\lambda_{2}\bigl\Vert\widehat{k}\bigr\Vert_{1}
+\]
+
+\end_inset
+
+or
+\begin_inset Formula 
+\[
+\begin{cases}
+\min & \sum_{i}\bigl\Vert R_{\widehat{\theta_{i}}}\widehat{k}-\widehat{\phi_{i}}\bigr\Vert_{2}^{2}+\lambda_{1}\bigl\Vert\nabla_{+}\widehat{k}\bigr\Vert_{1}+\lambda_{2}\bigl\Vert\sqrt{\widehat{k}}\bigr\Vert_{1}\\
+\text{s.t.} & \bigl\Vert\widehat{k}\bigr\Vert_{1}=1
+\end{cases}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Step 3 - Kernel recovery
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Augmented Lagrangian
+\begin_inset Formula 
+\begin{align*}
+\mathcal{L}\left(u\right) & =\frac{1}{2}\sum_{i}\Bigl\Vert R_{\widehat{\theta_{i}}}u-\widehat{\phi_{i}}\Bigr\Vert^{2}+\lambda_{1}\bigl\Vert d_{1}\bigr\Vert_{1}+\lambda_{2}\bigl\Vert d_{2}\bigr\Vert_{1}\\
+ & +\mu b_{0}\left(\boldsymbol{1}:u-1\right)+\mu b_{1}\cdot\left(\nabla_{+}u-d_{1}\right)+\mu b_{2}\cdot\left(u-d_{2}^{2}\right)\\
+ & +\frac{\mu}{2}\Bigl\Vert\boldsymbol{1}:u-1\Bigr\Vert^{2}+\frac{\mu}{2}\Bigl\Vert\nabla_{+}u-d_{1}\Bigr\Vert^{2}+\frac{\mu}{2}\Bigl\Vert u-d_{2}^{2}\Bigr\Vert^{2}.
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Update of 
+\begin_inset Formula $d_{2}$
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\partial_{d_{2}}\mathcal{L}=\lambda_{2}\cdot\text{sgn}d_{2}+2\mu d_{2}\left(d_{2}^{2}-u-b_{2}\right)=0.
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Step 2 - Find optimal 
+\begin_inset Formula $\theta_{i}$
+\end_inset
+
+ and align projections (if given edge locations)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Find 
+\begin_inset Formula $\theta_{i}$
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\min\int dy\int dx\cdot\left(y\cos\theta-x\sin\theta\right)^{2}\cdot p_{i}\left(x,y\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Find binary colors
+\begin_inset Formula 
+\[
+\begin{cases}
+c_{1}=\overline{u\left(x,y\right)} & \text{where }y\cos\theta-x\sin\theta>T\\
+c_{2}=\overline{u\left(x,y\right)} & \text{where }y\cos\theta-x\sin\theta<-T
+\end{cases}.
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Step 2 - Find optimal 
+\begin_inset Formula $\theta_{i}$
+\end_inset
+
+ and align projections
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename slide-plot/patch-cut-two-halves.jpg
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+A heuristic demonstration.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Step 1 - Edge Detection
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Based on gradient
+\end_layout
+
+\begin_layout Itemize
+Trick: mark out patches that are eligible to produce radon projections.
+\end_layout
+
+\end_deeper
+\begin_layout Section
+Numerical Experiments
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Solver for inverse radon transform
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename slide-plot/iradon.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Noise level 5%.
+ 10 observations from random angles.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Tests on images with abundant edges
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename slide-plot/test-1.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Tests on images with abundant edges
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename slide-plot/test-3.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Tests on images with binary colors
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename slide-plot/test-5.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Tests on real life image and kernel
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename slide-plot/test-22.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Discussion
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Discussion
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Lack of edges oriented at different angles
+\end_layout
+
+\begin_layout Enumerate
+Only work for binary edges, with two underlying assumptions
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+straightness
+\end_layout
+
+\begin_layout Enumerate
+sharpness
+\end_layout
+
+\begin_layout Standard
+
+\shape italic
+To address sharpness, a gaussian kernel can be added, but the result is
+ worse.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Similarity between kernels does not necessarily ensure similarity between
+ recovered and ground truth.
+\end_layout
+
+\end_deeper
+\begin_layout Section*
+Reference
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Reference
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+btprint "btPrintCited"
+bibfiles "ref"
+options "apalike"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

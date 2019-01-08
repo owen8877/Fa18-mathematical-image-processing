@@ -1,0 +1,15 @@
+\tikzstyle{int}=[draw, fill=blue!20, minimum size=2em]
+
+\begin{tikzpicture}[node distance=1.5cm,auto]
+  \node (I) {Obtain the image $I_b$};
+  \node (s2_4) [below of=I] {Detect set of edges $\{E_i\}$};
+  \node (s2_3) [below of=s2_4] {Find optimal $\theta_i$ for each edge $E_i$ and align the projections};
+  \node (s2_2) [below of=s2_3] {Recover kernel by projections $\{\hat{\phi_i}\}$};
+  \node (s2_1) [below of=s2_2] {Deblur $I_b$};
+  \node (end) [below of=s2_1] {Recovered image $\hat{I}$};
+  \path[->] (I) edge node {} (s2_4);
+  \path[->] (s2_4) edge node {Subsection 2.4} (s2_3);
+  \path[->] (s2_3) edge node {Subsection 2.3} (s2_2);
+  \path[->] (s2_2) edge node {Subsection 2.2} (s2_1);
+  \path[->] (s2_1) edge node {Subsection 2.1} (end);
+\end{tikzpicture}

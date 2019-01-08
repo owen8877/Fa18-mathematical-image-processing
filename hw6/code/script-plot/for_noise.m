@@ -1,0 +1,104 @@
+clear; %clc
+
+for index = 7:9
+    options = getConf(index);
+    options.p1name = sprintf('%s-%d', options.p1Sname, index);
+    options.edge_data = options.p1name;
+    options.deblur_kernel_name = sprintf('%s-%s-%d', options.p1name, options.kernel_name, index);
+    p1name = options.p1name;
+    p1Sname = options.p1Sname;
+    p2name = options.p2name;
+
+    truth_path = sprintf('image/source/%s.%s', p1Sname, p2name);
+    truth_image = imread(truth_path);
+    display_truth = default(options, 'display_truth', true);
+    kernel_path = sprintf('image/kernel/%s.bmp', options.kernel_name);
+    kernel_image = imread(kernel_path);
+
+    image_path = sprintf('image/blurred/%s.png', p1name);
+    result_image_path = sprintf('image/result/%s.png', p1name);
+    deblur_kernel_path = sprintf('image/kernel-rec/%s.bmp', options.deblur_kernel_name);
+
+    blurred_image = imread(image_path);
+    if default(options, 'display_recover', true)
+        display_recover = true;
+        result_image = imread(result_image_path);
+        deblur_kernel_image = imread(deblur_kernel_path);
+    else
+        display_recover = false;
+    end
+
+    details_coor = default(options, 'details', []);
+
+    if index == 7
+        figure(15); clf
+        t_a = helper(truth_image, details_coor, kernel_image, [0 0.5 0.5]);
+        axes(t_a.p_a)
+        title(sprintf('Ground truth (%dx%d)', size(truth_image, 1), size(truth_image, 2)))
+    end
+
+    r_a = helper(result_image, details_coor, deblur_kernel_image, [mod(index, 2)/2 (index==7)/2 0.5]);
+    axes(r_a.p_a)
+    rpsnr = psnr(result_image, truth_image);
+    title(['Recovered from noise level ' num2str(index/2-3.5) '%\newlinepsnr: ' num2str(rpsnr)])
+end
+
+set(gcf, 'Position', [43 309 690 690])
+
+function a = helper(image, coor, kernel, si)
+    m = 0.015;
+    colors = {[255 0 0], [0 255 0], [0 0 255]};
+    
+    a.d_a = cell(min(3, size(coor, 1)), 1);
+    for i = 1:min(3, size(coor, 1))
+        a.d_a{i} = axes('Position', c([0.75 0.96-0.23*i+m 0.25 0.23-2*m], si));
+        a.d_a{i}.ActivePositionProperty = 'position';
+        patch = get_patch(image, coor(i, :));
+        imshow(padcolor(patch, colors{i}), 'InitialMagnification', 'fit')
+        image = bI(image, coor(i, :), colors{i});
+    end
+    a.p_a = axes('OuterPosition', c([0 0 0.8 1], si));
+    a.p_a.ActivePositionProperty = 'outerposition';
+    imshow(image, 'InitialMagnification', 'fit')
+    if numel(kernel) > 0
+        a.k_a = axes('Position', c([0.75 0.04+m 0.25 0.23-2*m], si));
+        a.k_a.ActivePositionProperty = 'position';
+        imshow(kernel, 'InitialMagnification', 'fit')
+    end
+end
+
+function I = bI(I, coor, co)
+    thickness = 3;
+    lout = coor(1)-coor(3)-thickness;
+    lin = coor(1)-coor(3)-1;
+    rout = coor(1)+coor(3)+thickness;
+    rin = coor(1)+coor(3)+1;
+    tout = coor(2)-coor(4)-thickness;
+    tin = coor(2)-coor(4)-1;
+    bout = coor(2)+coor(4)+thickness;
+    bin = coor(2)+coor(4)+1;
+    
+    content = repmat(permute(co, [1 3 2]), rout-lout+1, tin-tout+1, 1);
+    
+    I(lout:rout, tout:tin, :) = content;
+    I(lout:rout, bin:bout, :) = content;
+    I(lout:lin, tout:bout, :) = permute(content, [2 1 3]);
+    I(rin:rout, tout:bout, :) = permute(content, [2 1 3]);
+end
+
+function patch2 = padcolor(patch, color)
+    thickness = 3;
+    patch2 = zeros(size(patch) + [2 2 0]*thickness, 'like', patch);
+    for i = 1:size(patch, 3)
+        patch2(:, :, i) = padarray(patch(:, :, i), [1 1]*thickness, color(i));
+    end
+end
+
+function cc = c(coor, si)
+    xo = si(1); yo = si(2); s = si(3);
+    cc = [coor(1)*s+xo coor(2)*s+yo coor(3)*s coor(4)*s];
+end
+
+function p = get_patch(image, coor)
+    p = image(coor(1)-coor(3):coor(1)+coor(3), coor(2)-coor(4):coor(2)+coor(4), :);
+end
